@@ -1,0 +1,7 @@
+934bcaf97ef3348413263331131c9fa7f55f30db333c711929c124fb635f7e1b  models/ocr/ces.traineddata
+2d4482c8513b25c9d67ce5d42aa7b77ee15435aa40d7386631d72601c2654716  models/screener/scr-e5-fp/config.json
+6b8b43fc32df44dedd6a4743ae7bc038feddae23b24fdd6d80099337bf8a5857  models/screener/scr-e5-fp/model.safetensors
+ca0f80aedb1211935a736e4be643316b044a524f26cd5d3596451d049e3b8d1e  models/screener/scr-e5-fp/screener-config.json
+4c9a12db838c9f97f50869806999f75d7a9a4e0f3e70a063fe9b03ed8daab229  models/screener/scr-e5-fp/tokenizer_config.json
+fbfb186ad2307bca530e05d20c6e1d050ecc0dab94c4d961c47e547573c92118  models/screener/scr-e5-fp/tokenizer.json
+8e98617208d142ca17258b6091431754d01f87da55cebf39410b6640176b7d2d  models/verifier/qwen-pair-q4_k_m.gguf

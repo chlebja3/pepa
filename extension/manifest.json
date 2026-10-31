@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "PEPA – Prohlížečový Expert na Podvody s AI",
+  "version": "0.9.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyKxtF2XSjWqN5yAPbVKfTElmtirmxyIl4LaTrwx0DIn8J+8tWLhQshXwRveunVY/NiAMq/7J+fmYHVTo6RD2As1tPzZzyYw/EP03JxTmdsmPENFaIrKpkBMsXA5c8mlBlHsbeVXGLYCJOGFLS4w0dzhvRD8rnZnBWQrFEgt5Vw2L6OY5z1xmDDotmXfMTHQEeqQ9nG6hNFKfxm6Lu6ayHxQLtVb/TWjuS89ZoPIxnt6mBH32msHQCA/dPtUViI/M+m6KJMr3gE8kXwh2azdQswmP2ZkWIsONMQ1SUIx3K5z0q+faPzA6eBNpXkJCBbeg8NJZe0qnbXL7328PawvQMwIDAQAB",
+  "description": "Sám upozorní na podvodný e-mail nebo web, když ho čtete. Vlastní česká AI běží přímo ve vašem počítači, nic se neodesílá.",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "PEPA",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "fonts/*.woff2"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "use_dynamic_url": true
+    }
+  ],
+  "minimum_chrome_version": "116"
+}

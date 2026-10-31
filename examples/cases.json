@@ -1,0 +1,67 @@
+[
+ {
+  "id": "banka-sms",
+  "layout": "sms",
+  "expect": "warn"
+ },
+ {
+  "id": "posta-sms",
+  "layout": "sms",
+  "expect": "warn"
+ },
+ {
+  "id": "sim-sms",
+  "layout": "sms",
+  "expect": "warn"
+ },
+ {
+  "id": "banka-email",
+  "layout": "mail",
+  "expect": "warn"
+ },
+ {
+  "id": "dan-email",
+  "layout": "mail",
+  "expect": "warn"
+ },
+ {
+  "id": "vyhra-email",
+  "layout": "mail",
+  "expect": "warn"
+ },
+ {
+  "id": "prace-email",
+  "layout": "mail",
+  "expect": "warn"
+ },
+ {
+  "id": "hlasovani-chat",
+  "layout": "chat",
+  "expect": "warn"
+ },
+ {
+  "id": "nehoda-social",
+  "layout": "web",
+  "expect": "warn"
+ },
+ {
+  "id": "banka-hovor",
+  "layout": "web",
+  "expect": "warn"
+ },
+ {
+  "id": "erecept-sms",
+  "layout": "sms",
+  "expect": "quiet"
+ },
+ {
+  "id": "pocasi-web",
+  "layout": "web",
+  "expect": "quiet"
+ },
+ {
+  "id": "bourky-web",
+  "layout": "web",
+  "expect": "quiet"
+ }
+]

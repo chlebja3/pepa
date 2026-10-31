@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>PEPA</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<header class="top">
+  <img src="icons/icon-48.png" alt="" width="28" height="28">
+  <span class="brand">PEPA</span>
+</header>
+
+<section id="hero" class="hero" data-state="loading" aria-live="polite">
+  <div class="hero-icon" aria-hidden="true"></div>
+  <div>
+    <h1 id="headline">Zjišťuji stav ochrany…</h1>
+    <p id="status" role="status"></p>
+  </div>
+</section>
+
+<section id="controls" class="controls" hidden>
+  <div class="site">
+    <span class="site-label">Tato stránka</span>
+    <strong id="site">—</strong>
+    <p id="scan-status"></p>
+  </div>
+  <label class="switch">
+    <span><b>Hlídat tuto stránku</b><small id="toggle-hint">Kontroluje viditelné texty, adresy odkazů a text z vybraných obrázků.</small></span>
+    <input id="toggle" type="checkbox" role="switch" disabled>
+    <i aria-hidden="true"></i>
+  </label>
+  <label class="switch">
+    <span><b>Ochrana ve všech webech</b><small>Vypněte, když ji chcete na chvíli pozastavit.</small></span>
+    <input id="pause" type="checkbox" role="switch" disabled>
+    <i aria-hidden="true"></i>
+  </label>
+</section>
+
+<footer>
+  <details>
+    <summary>Jak ochrana funguje</summary>
+    <p>Rozšíření čte texty, které vidíte na obrazovce, a kontroluje je vlastní umělou inteligencí, která běží <b>přímo ve vašem počítači</b> v místním pomocníkovi. Kontrolovaný obsah se neodesílá na internet ani neukládá na disk.</p>
+    <p>Když zpráva připomíná známý druh podvodu, zvýrazní ji a poradí, co dělat. Ochrana se může mýlit: neoznačená zpráva ještě nemusí být bezpečná.</p>
+    <p>U odkazů kontroluje názvy domén. Neotevírá cílové weby ani nerozbaluje zkrácené odkazy. Používá také místní kopii seznamu rizikových e-shopů ČOI; uvedení na seznamu není důkaz podvodu. <a href="https://coi.gov.cz/pro-spotrebitele/otevrena-data/licence-otevrenych-dat/" target="_blank" rel="noreferrer">Zdroj a licence ČOI</a>.</p>
+    <p>Nekontroluje hovory, přílohy ani jiné aplikace mimo prohlížeč.</p>
+  </details>
+</footer>
+<script src="popup.js"></script>
+</body>
+</html>

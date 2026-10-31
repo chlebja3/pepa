@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hrajte si na podvodníka · PEPA</title>
+<style>
+  :root { --ink:#1b1b1a; --muted:#6b6b66; --line:#e3e3df; --blue:#1F56A8; --yellow:#FFC629; --red:#c8102e;
+          --panel:#14171c; --panel2:#1e232b; --panel-ink:#f1f1ee; --panel-muted:#a3aab5; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { font: 15px/1.45 system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; color: var(--ink); background: #eef0f3;
+         display: grid; grid-template-columns: 400px 1fr; }
+  @media (max-width: 960px) { body { grid-template-columns: 1fr; height: auto; } }
+
+  /* ---------- the scammer's panel (inside <nav>: PEPA does not read it, only the victim's screen) ---------- */
+  body > nav { background: var(--panel); color: var(--panel-ink); padding: 22px 22px 28px; overflow-y: auto; height: 100vh; }
+  @media (max-width: 960px) { body > nav { height: auto; } }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand svg { flex: none; }
+  .brand b { font-size: 21px; letter-spacing: .3px; }
+  .brand small { display: block; color: var(--panel-muted); font-size: 13px; }
+  .how { margin: 16px 0 18px; padding: 12px 14px; border-radius: 12px; background: var(--panel2); color: var(--panel-muted); font-size: 13.5px; }
+  .how b { color: var(--panel-ink); }
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 18px; }
+  .tabs button { border: 0; border-radius: 12px; padding: 10px 4px 8px; background: var(--panel2); color: var(--panel-muted); cursor: pointer; font: inherit; font-size: 12.5px; }
+  .tabs button span { display: block; font-size: 22px; line-height: 1.2; }
+  .tabs button[aria-pressed="true"] { background: var(--yellow); color: #1b1b1a; font-weight: 700; }
+  label { display: block; font-size: 12.5px; color: var(--panel-muted); margin: 12px 0 5px; text-transform: uppercase; letter-spacing: .6px; }
+  input[type=text], textarea { width: 100%; border: 1px solid #343b46; background: #0d1014; color: var(--panel-ink); border-radius: 10px; padding: 10px 12px; font: inherit; }
+  textarea { min-height: 120px; resize: vertical; }
+  input:focus, textarea:focus { outline: 2px solid var(--yellow); outline-offset: 1px; border-color: transparent; }
+  .row { display: flex; gap: 8px; align-items: center; }
+  .who { display: flex; gap: 6px; margin-top: 4px; }
+  .who button { flex: 1; border: 1px solid #343b46; background: transparent; color: var(--panel-muted); border-radius: 10px; padding: 7px; cursor: pointer; font: inherit; font-size: 13px; }
+  .who button[aria-pressed="true"] { border-color: var(--yellow); color: var(--panel-ink); }
+  .check { display: flex; align-items: center; gap: 8px; margin-top: 12px; color: var(--panel-muted); font-size: 14px; }
+  .send { width: 100%; margin-top: 12px; border: 0; border-radius: 12px; padding: 12px; background: var(--red); color: #fff; font: inherit; font-weight: 700; font-size: 16px; cursor: pointer; }
+  .send:hover { filter: brightness(1.1); }
+  .hint { color: var(--panel-muted); font-size: 12.5px; margin-top: 6px; }
+  h3 { font-size: 13px; color: var(--panel-muted); text-transform: uppercase; letter-spacing: .6px; margin: 22px 0 8px; }
+  .chips { display: flex; flex-direction: column; gap: 6px; }
+  .chips button { text-align: left; border: 1px solid #2c323c; background: var(--panel2); color: #dfe3e8; border-radius: 10px; padding: 8px 11px; cursor: pointer; font: inherit; font-size: 13px; }
+  .chips button:hover { border-color: #4a5260; }
+  .chips button.ok { border-left: 3px solid #2bc58e; }
+  .chips button.bad { border-left: 3px solid var(--red); }
+  .play { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .play button { border: 1px solid #343b46; border-radius: 12px; padding: 10px 8px; background: transparent; color: var(--panel-ink); font: inherit; font-size: 13.5px; cursor: pointer; }
+  .play button:hover { background: var(--panel2); }
+  .reset { margin-top: 18px; width: 100%; border: 0; background: transparent; color: var(--panel-muted); text-decoration: underline; cursor: pointer; font: inherit; font-size: 13px; }
+  .note { margin-top: 18px; font-size: 12.5px; color: var(--panel-muted); }
+
+  /* ---------- the victim's screen ---------- */
+  main { height: 100vh; padding: 18px; display: flex; flex-direction: column; min-width: 0; }
+  @media (max-width: 960px) { main { height: 85vh; } }
+  .screen-label::before { content: "Obrazovka oběti"; }
+  .bar .url::before { content: attr(data-url); }
+  .screen-label { font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin: 0 0 8px 4px; }
+  .device { flex: 1; min-height: 0; background: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(20, 30, 50, .14); overflow: hidden; display: flex; flex-direction: column; }
+  .bar { height: 34px; flex: none; background: #f1f2f4; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 7px; padding: 0 12px; }
+  .bar i { width: 11px; height: 11px; border-radius: 50%; background: #d7d9dd; }
+  .bar .url { margin-left: 14px; flex: 1; max-width: 420px; height: 22px; border-radius: 11px; background: #fff; border: 1px solid var(--line); font-size: 12px; color: var(--muted); display: flex; align-items: center; padding: 0 12px; }
+  .app { flex: 1; min-height: 0; display: flex; }
+  .avatar { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; }
+
+  /* chat app */
+  .chat-list { width: 290px; border-right: 1px solid var(--line); background: #fff; overflow: hidden; }
+  @media (max-width: 1250px) { .chat-list { display: none; } }
+  .chat-list h4 { margin: 0; padding: 16px 16px 10px; color: #128c55; font-size: 20px; }
+  .contact { display: flex; gap: 10px; padding: 10px 16px; align-items: center; border-top: 1px solid #f2f2f0; }
+  .contact.on { background: #f0f2f5; }
+  .contact .t { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; color: var(--muted); }
+  .contact .t b { display: block; color: var(--ink); font-size: 14.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+  .conv { flex: 1; display: flex; flex-direction: column; min-width: 0; background: #efeae2; }
+  .conv-head { flex: none; display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #f0f2f5; border-bottom: 1px solid var(--line); }
+  .conv-head small { display: block; color: var(--muted); font-size: 12.5px; }
+  .msgs { flex: 1; overflow-y: auto; padding: 18px 7%; }
+  .thread { display: flex; flex-direction: column; gap: 6px; }
+  /* Each bubble sits a few levels deep, as in real chat apps, so neighbouring bubbles stay separate messages. */
+  .msg-row, .msg-row > div, .msg-row > div > div { display: flex; flex-direction: column; }
+  .day { align-self: center; background: #fff; border-radius: 8px; padding: 4px 12px; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .bubble { max-width: 68%; background: #fff; border-radius: 10px; padding: 7px 11px 5px; box-shadow: 0 1px 1px rgba(0,0,0,.08); white-space: pre-wrap; word-wrap: break-word; align-self: flex-start; }
+  .bubble.me { background: #d9fdd3; align-self: flex-end; }
+  .bubble .time { float: right; margin: 6px 0 -2px 12px; font-size: 11px; color: #8a8f94; }
+  .compose { flex: none; display: flex; gap: 10px; align-items: center; padding: 10px 16px; background: #f0f2f5; color: #8a8f94; font-size: 14px; }
+  .compose div { flex: 1; background: #fff; border-radius: 10px; padding: 10px 14px; }
+  .empty { margin: auto; color: var(--muted); text-align: center; max-width: 340px; font-size: 14px; }
+
+  /* mail app */
+  .folders { width: 220px; padding: 14px 10px; border-right: 1px solid var(--line); background: #f8fafd; }
+  @media (max-width: 1250px) { .folders { display: none; } }
+  .folders .new { background: #c2e7ff; border-radius: 16px; padding: 14px 18px; font-weight: 600; margin-bottom: 14px; display: inline-block; }
+  .folders div.f { padding: 6px 14px; border-radius: 16px; font-size: 14px; display: flex; justify-content: space-between; }
+  .folders div.f.on { background: #d3e3fd; font-weight: 700; }
+  .mail { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .inbox { flex: none; max-height: 34%; overflow-y: auto; border-bottom: 1px solid var(--line); }
+  .mrow { display: grid; grid-template-columns: 190px 1fr 60px; gap: 12px; padding: 9px 18px; border-bottom: 1px solid #f2f2f0; font-size: 14px; cursor: pointer; }
+  .mrow > * { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mrow.on { background: #e8f0fe; }
+  .mrow .d { color: var(--muted); text-align: right; font-size: 12.5px; }
+  .read { flex: 1; overflow-y: auto; padding: 22px 28px; }
+  .read h2 { margin: 0 0 16px; font-weight: 500; font-size: 22px; }
+  .from { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; }
+  .from small { display: block; color: var(--muted); font-size: 12.5px; }
+  .body p { margin: 0 0 12px; white-space: pre-wrap; word-wrap: break-word; }
+  .att { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin-top: 8px; color: var(--ink); text-decoration: none; font-size: 14px; }
+  .att b { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 6px; background: #e8453c; color: #fff; font-size: 11px; }
+
+  /* marketplace */
+  .item { width: 330px; padding: 20px; border-right: 1px solid var(--line); overflow-y: auto; }
+  @media (max-width: 1250px) { .item { display: none; } }
+  .photo { height: 190px; border-radius: 12px; background: linear-gradient(160deg, #a7b8c9, #6f8296); position: relative; overflow: hidden; }
+  .photo::before { content: ""; position: absolute; left: 12%; right: 12%; bottom: 22%; height: 34%; border-radius: 14px 14px 6px 6px; background: #3f4c5c; }
+  .photo::after { content: ""; position: absolute; left: 18%; right: 18%; bottom: 44%; height: 26%; border-radius: 12px; background: #56667a; }
+  .price { font-size: 26px; font-weight: 800; margin: 14px 0 2px; }
+  .seller { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13.5px; }
+  .bazar-head { background: #fff4db; }
+  .app-bazar .conv { background: #f6f7f9; }
+  .app-bazar .bubble.me { background: #dbe8ff; }
+
+  /* social network */
+  .feed { flex: 1; overflow-y: auto; background: #f0f2f5; padding: 18px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .post { width: 100%; max-width: 600px; background: #fff; border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+  .post header { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+  .post header small { display: block; color: var(--muted); font-size: 12.5px; }
+  .post p { margin: 0 0 8px; white-space: pre-wrap; word-wrap: break-word; }
+  .post footer { display: flex; justify-content: space-around; border-top: 1px solid var(--line); padding-top: 8px; margin-top: 10px; color: var(--muted); font-size: 13.5px; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #1b1b1a; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 14px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<nav aria-label="Panel podvodníka">
+  <div class="brand">
+    <svg width="44" height="44" viewBox="0 0 128 128" aria-hidden="true"><rect x="4" y="4" width="120" height="120" rx="28" fill="#1F56A8"/><circle cx="56" cy="54" r="27" fill="none" stroke="#fff" stroke-width="12"/><path d="M76 75 L99 98" stroke="#fff" stroke-width="15" stroke-linecap="round"/><path d="M44 55 L53 64 L69 46" fill="none" stroke="#FFC629" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div><b>Hrajte si na podvodníka</b><small>Zkuste napálit oběť. PEPA ji hlídá.</small></div>
+  </div>
+  <div class="how">
+    <b>1.</b> Vyberte, kde budete podvádět. <b>2.</b> Napište zprávu vlastními slovy, nebo si vezměte inspiraci.
+    <b>3.</b> Odešlete. Zpráva se objeví na obrazovce oběti vpravo a PEPA ji během pár sekund zkontroluje.
+    Tento panel PEPA nečte, vidí jen to, co oběť.
+  </div>
+
+  <div class="tabs" role="group" aria-label="Aplikace">
+    <button data-app="chat"><span>💬</span>Chat</button>
+    <button data-app="mail"><span>✉️</span>E-mail</button>
+    <button data-app="bazar"><span>🛋️</span>Bazar</button>
+    <button data-app="social"><span>📣</span>Síť</button>
+  </div>
+
+  <form id="form" autocomplete="off">
+    <div data-for="chat bazar">
+      <label for="sender">Vaše jméno nebo číslo</label>
+      <input type="text" id="sender">
+      <div class="who" role="group" aria-label="Kdo píše">
+        <button type="button" data-who="them" aria-pressed="true">Píšu jako podvodník</button>
+        <button type="button" data-who="me" aria-pressed="false">Odpověď oběti</button>
+      </div>
+    </div>
+    <div data-for="mail">
+      <label for="mfrom">Od</label>
+      <input type="text" id="mfrom">
+      <label for="msubject">Předmět</label>
+      <input type="text" id="msubject">
+    </div>
+    <div data-for="social">
+      <label for="author">Autor příspěvku</label>
+      <input type="text" id="author">
+      <div class="check"><input type="checkbox" id="sponsored"><label for="sponsored" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px">Placená reklama („Sponzorováno“)</label></div>
+    </div>
+    <label for="text">Zpráva</label>
+    <textarea id="text" placeholder="Napište zprávu, kterou má oběť dostat…"></textarea>
+    <div data-for="mail">
+      <label for="attach">Příloha (nepovinné, jen název souboru)</label>
+      <input type="text" id="attach" placeholder="např. faktura.pdf">
+    </div>
+    <button class="send" type="submit" id="sendBtn">Odeslat oběti ➤</button>
+    <div class="hint">Ctrl + Enter odešle. Odkazy ve zprávách nikam nevedou.</div>
+  </form>
+
+  <h3>Celý scénář jedním klikem</h3>
+  <div class="play">
+    <button type="button" id="playScam">▶ Přehrát podvod</button>
+    <button type="button" id="playOk">▶ Přehrát běžnou zprávu</button>
+  </div>
+
+  <h3>Inspirace (klikněte a upravte)</h3>
+  <div class="chips" id="chips"></div>
+
+  <button type="button" class="reset" id="reset">Vymazat obrazovku oběti</button>
+  <p class="note">Všechny jména, čísla, adresy a odkazy jsou vymyšlené. Stránka nic neodesílá, vše zůstává v tomto okně.</p>
+</nav>
+
+<main>
+  <p class="screen-label" aria-label="Obrazovka oběti"></p>
+  <div class="device">
+    <div class="bar"><i></i><i></i><i></i><div class="url" id="url"></div></div>
+    <div class="app" id="app"></div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+// Every scenario: how the victim's app looks, what the form asks for, inspiration and two one-click scripts.
+// All names, numbers, addresses and links are invented (.example domains). Red chips are scams, green ones ordinary messages.
+const APPS = {
+  chat: {
+    url: 'chat.example/zpravy', sender: '+420 777 123 456',
+    chips: [
+      ['bad', 'Ahoj mami, tohle je moje nové číslo. Starý telefon mi spadl do vody, to staré si smaž.'],
+      ['bad', 'Potřebuju nutně zaplatit fakturu a v novém mobilu mi ještě nejde bankovnictví. Můžeš to poslat za mě? Zítra ti to vrátím.'],
+      ['bad', 'Je to 18 900 Kč a je to dnes splatné. Pošlu ti číslo účtu, ale prosím rychle a tátovi zatím nic neříkej.'],
+      ['bad', 'Ahoj, hlasuješ prosím pro moji neteř v soutěži? Stačí kliknout na odkaz a přihlásit se: hlasovani-souteze.example/klara'],
+      ['ok', 'Ahoj mami, v neděli přijedeme na oběd kolem dvanácté. Mám něco přivézt?'],
+      ['ok', 'Děti se moc těší. Kdyby něco, volej, večer jsem doma.'],
+    ],
+    scam: [[0, 'them'], [5, 'me'], [1, 'them'], [2, 'them']].map(([i, who]) => ({who, text: i === 5 ? 'Ahoj, co se stalo? Jsi v pořádku?' : null, chip: i})),
+    ok: [{chip: 4, who: 'them'}, {who: 'me', text: 'To je skvělé, upeču buchty. Přivezte jen dobrou náladu.'}, {chip: 5, who: 'them'}],
+  },
+  mail: {
+    url: 'posta.example/dorucene',
+    chips: [
+      ['bad', {from: 'Bezpečnostní oddělení <podpora@overeni-klienta.example>', subject: 'Váš účet byl dočasně omezen', text: 'Vážený kliente,\n\npři pravidelné kontrole jsme zaznamenali neobvyklé přihlášení k Vašemu internetovému bankovnictví z neznámého zařízení. Z bezpečnostních důvodů byl Váš účet dočasně omezen.\n\nPro obnovení přístupu je nutné do 24 hodin ověřit Vaši totožnost na adrese https://overeni-klienta.example/prihlaseni a zadat přihlašovací údaje a číslo platební karty včetně kódu CVV.\n\nPokud ověření neprovedete, bude účet trvale zablokován.\n\nOddělení bezpečnosti klientů'}],
+      ['bad', {from: 'Účtárna <fakturace@dodavatel-sluzeb.example>', subject: 'Faktura č. 2026-1187 po splatnosti', text: 'Dobrý den,\n\nv příloze Vám zasíláme fakturu za služby v říjnu 2026, která je již po splatnosti. Prosíme o úhradu do tří dnů.\n\nS pozdravem\núčtárna', attach: 'faktura_2026_1187.pdf.html'}],
+      ['bad', {from: 'Doručovací služba <info@zasilky-doruceni.example>', subject: 'Zásilku nelze doručit', text: 'Dobrý den,\n\nVaši zásilku se nepodařilo doručit, protože nebylo uhrazeno clo 39 Kč. Pokud poplatek nezaplatíte do 48 hodin, zásilka bude vrácena odesílateli.\n\nZaplatit můžete kartou zde: https://zasilky-doruceni.example/platba'}],
+      ['ok', {from: 'Městská knihovna <vypujcky@knihovna.example>', subject: 'Připomínka: výpůjčka končí za 3 dny', text: 'Dobrý den,\n\nupozorňujeme, že výpůjční lhůta knihy „Babička“ končí v pondělí 3. 11. Knihu můžete vrátit na kterékoli pobočce nebo si výpůjčku prodloužit ve svém čtenářském kontě.\n\nPřejeme hezký den,\nMěstská knihovna'}],
+      ['ok', {from: 'Jana Nováková <jana.novakova@posta.example>', subject: 'Nedělní oběd', text: 'Ahoj,\n\nv neděli bychom k vám přijeli kolem dvanácté. Vezmu dort a děti chtějí jít odpoledne na hřiště.\n\nMěj se,\nJana'}],
+    ],
+    scam: [{chip: 0}], ok: [{chip: 3}],
+  },
+  bazar: {
+    url: 'bazar.example/inzerat/rohova-sedacka', sender: 'Tomáš K.',
+    chips: [
+      ['bad', 'Dobrý den, sedačku beru za plnou cenu, ani se nemusím přijet podívat. Jsem teď ale v zahraničí, pošlu pro ni kurýra.'],
+      ['bad', 'Peníze jsem vám už poslal přes bezpečnou platbu bazaru. Přijmete si je tady: bezpecna-platba-bazar.example/prijem\nPro připsání peněz tam stačí vyplnit číslo vaší karty, platnost a trojmístný kód ze zadní strany. Kurýr přijede zítra.'],
+      ['bad', 'Proč to ještě nemáte vyplněné? Bez potvrzení karty vám peníze propadnou a kurýr nepřijede. Pošlete mi prosím aspoň kód, co vám přišel do mobilu.'],
+      ['ok', 'Dobrý den, je sedačka ještě k dispozici? Mohl bych se na ni přijet podívat v sobotu dopoledne?'],
+      ['ok', 'Platil bych hotově při převzetí. Odvezu si ji sám, mám dodávku.'],
+    ],
+    scam: [{chip: 0, who: 'them'}, {who: 'me', text: 'Dobrý den, to by šlo. Jak to s tou platbou uděláme?'}, {chip: 1, who: 'them'}],
+    ok: [{chip: 3, who: 'them'}, {who: 'me', text: 'Dobrý den, ano, je. V sobotu v deset by to šlo.'}, {chip: 4, who: 'them'}],
+  },
+  social: {
+    url: 'sit.example/feed', author: 'Finanční zprávy dnes',
+    chips: [
+      ['bad', 'Známý moderátor prozradil v živém vysílání, jak si důchodci přivydělávají přes 50 000 Kč týdně. Stačí jednorázový vklad 6 000 Kč a automatická platforma s umělou inteligencí obchoduje s kryptoměnami za vás.\n\nZisk je zaručený, riziko nulové. Registrace je otevřená jen dnes pro prvních 50 zájemců, poradce vám pak zavolá a pomůže nainstalovat aplikaci.'],
+      ['bad', 'NALÉHAVÉ! Po nehodě na dálnici hledáme dárce krve pro malou Elišku. Rodina prosí o finanční pomoc na léčbu, každá koruna pomůže. Přispějte na odkaz: pomoc-elisce.example a sdílejte!'],
+      ['ok', 'Obecní úřad informuje: v sobotu 8. listopadu proběhne svoz velkoobjemového odpadu. Kontejnery budou přistaveny u hasičské zbrojnice od 8 do 12 hodin.'],
+      ['ok', 'Dnes jsme s dětmi vyrazili na Sněžku. Počasí vyšlo nádherně a cestou dolů jsme si dali borůvkové knedlíky. Doporučujeme!'],
+    ],
+    scam: [{chip: 0, sponsored: true}], ok: [{chip: 2, author: 'Obec Lipová'}],
+  },
+};
+const COLORS = ['#7b61ff', '#e2565a', '#0e9f6e', '#e08a00', '#2a78d6', '#b0428f'];
+const $ = id => document.getElementById(id);
+let app = 'chat', who = 'them', playing = false;
+
+const esc = s => s.replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+// Links are shown as links (as real apps do, so PEPA checks them too) but go nowhere here.
+const linkify = s => esc(s).replace(/\b((?:https?:\/\/|www\.)[^\s<]+|[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:example|cz|com|net|org|eu|info)(?:\/[^\s<]*)?)/gi,
+  m => `<a href="${/^https?:/i.test(m) ? m : 'https://' + m}" data-nowhere>${m}</a>`);
+const now = () => new Date().toLocaleTimeString('cs-CZ', {hour: '2-digit', minute: '2-digit'});
+const initial = s => (s.replace(/[^\p{L}\d+]/gu, '')[0] || '?').toUpperCase();
+const color = s => COLORS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % COLORS.length];
+const avatar = (name, size = 40) => `<div class="avatar" style="background:${color(name)};width:${size}px;height:${size}px">${esc(initial(name))}</div>`;
+
+function render() {
+  const a = APPS[app];
+  for (const b of document.querySelectorAll('.tabs button')) b.setAttribute('aria-pressed', b.dataset.app === app);
+  for (const el of document.querySelectorAll('[data-for]')) el.hidden = !el.dataset.for.split(' ').includes(app);
+  $('url').dataset.url = a.url;
+  $('sendBtn').textContent = {chat: 'Odeslat oběti ➤', mail: 'Doručit e-mail ➤', bazar: 'Odeslat oběti ➤', social: 'Zveřejnit příspěvek ➤'}[app];
+  if (a.sender) $('sender').value = a.sender;
+  if (a.author) $('author').value = a.author;
+  $('mfrom').value = ''; $('msubject').value = ''; $('attach').value = ''; $('text').value = '';
+  $('chips').innerHTML = a.chips.map(([kind, c], i) => `<button type="button" class="${kind}" data-chip="${i}">${esc(typeof c === 'string' ? c : c.subject)}</button>`).join('');
+  const views = {
+    chat: () => `
+      <nav class="chat-list"><h4>Zprávy</h4>
+        <div class="contact on">${avatar($('sender').value)}<div class="t"><b id="contactName">${esc($('sender').value)}</b>nová konverzace</div></div>
+        <div class="contact">${avatar('Jana')}<div class="t"><b>Jana</b>Tak v neděli ve dvanáct!</div></div>
+        <div class="contact">${avatar('Rodina')}<div class="t"><b>Rodina 👨‍👩‍👧</b>Petr: fotky z oslavy jsou v albu</div></div>
+        <div class="contact">${avatar('Pavel')}<div class="t"><b>Pavel – práce</b>Posílám podklady na zítra</div></div>
+      </nav>
+      <section class="conv">
+        <div class="conv-head">${avatar($('sender').value)}<div><b id="headName">${esc($('sender').value)}</b><small>online</small></div></div>
+        <div class="msgs" id="msgs"><div class="thread" id="thread"><div class="day">Dnes</div></div></div>
+        <div class="compose">😊<div>Napište zprávu</div>🎤</div>
+      </section>`,
+    bazar: () => `
+      <nav class="item"><div class="photo"></div><div class="price">4 500 Kč</div><b>Rohová sedačka, zachovalá</b>
+        <p style="color:var(--muted);font-size:14px">Brno · osobní odběr</p>
+        <div class="seller">Prodáváte vy · inzerát vystaven před 2 dny</div></nav>
+      <section class="conv">
+        <div class="conv-head bazar-head">${avatar($('sender').value)}<div><b id="headName">${esc($('sender').value)}</b><small>zájemce o: Rohová sedačka</small></div></div>
+        <div class="msgs" id="msgs"><div class="thread" id="thread"><div class="day">Dnes</div></div></div>
+        <div class="compose"><div>Napište zprávu zájemci</div></div>
+      </section>`,
+    mail: () => `
+      <nav class="folders"><div class="new">✏️ Napsat</div>
+        <div class="f on"><span>Doručené</span><span id="unread"></span></div><div class="f">Odeslané</div><div class="f">Koncepty</div><div class="f">Spam</div><div class="f">Koš</div></nav>
+      <section class="mail"><nav class="inbox" id="inbox"></nav>
+        <div class="read" id="read"><div class="empty">Doručené e-maily se tu otevřou.<br>Napište vlevo e-mail a doručte ho oběti.</div></div></section>`,
+    social: () => `
+      <section class="feed" id="feed">
+        <article class="post"><header>${avatar('Turistický klub')}<div><b>Turistický klub Javor</b><small>včera</small></div></header>
+          <p>Děkujeme všem, kdo se v sobotu přidali k úklidu stezky na Babí lom. Bylo nás přes čtyřicet!</p>
+          <footer><span>👍 To se mi líbí</span><span>💬 Komentář</span><span>↗ Sdílet</span></footer></article>
+      </section>`,
+  };
+  $('app').innerHTML = views[app]();
+  $('app').className = 'app app-' + app;
+  if (app === 'mail') renderInbox();
+}
+
+const mails = [];
+function renderInbox() {
+  $('inbox').innerHTML = mails.map((m, i) => `<div class="mrow${i === mails.length - 1 ? ' on' : ''}"><b>${esc(m.from.replace(/\s*<.*>/, ''))}</b><span>${esc(m.subject)}</span><span class="d">${m.time}</span></div>`).reverse().join('');
+  $('unread').textContent = mails.length || '';
+}
+
+function deliver(item) {
+  const text = item.text.trim();
+  if (!text) { toast('Napište nejdřív zprávu.'); return; }
+  if (app === 'chat' || app === 'bazar') {
+    const name = $('sender').value.trim() || 'Neznámý';
+    $('headName').textContent = name;
+    if ($('contactName')) $('contactName').textContent = name;
+    const div = document.createElement('div');
+    div.className = 'bubble' + (item.who === 'me' ? ' me' : '');
+    div.dataset.message = item.who === 'me' ? 'out' : 'in';
+    div.innerHTML = `${linkify(text)}<span class="time">${now()}</span>`;
+    const row = document.createElement('div');
+    row.className = 'msg-row';
+    row.innerHTML = '<div><div></div></div>';
+    row.firstChild.firstChild.append(div);
+    $('thread').append(row);
+    $('msgs').scrollTop = $('msgs').scrollHeight;
+  } else if (app === 'mail') {
+    const m = {from: item.from || 'Neznámý odesílatel <nekdo@posta.example>', subject: item.subject || '(bez předmětu)', text, attach: (item.attach || '').trim(), time: now()};
+    mails.push(m);
+    renderInbox();
+    const name = m.from.replace(/\s*<.*>/, ''), addr = (m.from.match(/<(.*)>/) || [, ''])[1];
+    $('read').innerHTML = `<h2>${esc(m.subject)}</h2>
+      <div class="from">${avatar(name)}<div><b>${esc(name)}</b> <span style="color:var(--muted);font-size:13px">${esc(addr ? '<' + addr + '>' : '')}</span><small>komu: mně · ${m.time}</small></div></div>
+      <div class="body">${text.split(/\n\s*\n/).map(p => `<p>${linkify(p)}</p>`).join('')}</div>
+      ${m.attach ? `<a class="att" href="priloha/${encodeURIComponent(m.attach)}" download="${esc(m.attach)}" data-nowhere><b>${esc((m.attach.split('.').pop() || '').slice(0, 4).toUpperCase())}</b>${esc(m.attach)}</a>` : ''}`;
+  } else {
+    const author = item.author || $('author').value.trim() || 'Neznámý autor';
+    const post = document.createElement('article');
+    post.className = 'post';
+    post.innerHTML = `<header>${avatar(author)}<div><b>${esc(author)}</b><small>${item.sponsored ? 'Sponzorováno · ' : ''}právě teď</small></div></header>
+      ${text.split(/\n\s*\n/).map(p => `<p>${linkify(p)}</p>`).join('')}
+      <footer><span>👍 To se mi líbí</span><span>💬 Komentář</span><span>↗ Sdílet</span></footer>`;
+    $('feed').prepend(post);
+    $('feed').scrollTop = 0;
+  }
+}
+
+function fromForm() {
+  return {text: $('text').value, who, from: $('mfrom').value.trim(), subject: $('msubject').value.trim(), attach: $('attach').value,
+          author: $('author').value.trim(), sponsored: $('sponsored').checked};
+}
+
+function fillChip(i) {
+  const c = APPS[app].chips[i][1];
+  if (typeof c === 'string') $('text').value = c;
+  else { $('mfrom').value = c.from; $('msubject').value = c.subject; $('text').value = c.text; $('attach').value = c.attach || ''; }
+  $('text').focus();
+}
+
+async function play(script) {
+  if (playing) return;
+  playing = true;
+  render();
+  for (const step of script) {
+    const chip = step.chip !== undefined ? APPS[app].chips[step.chip][1] : null;
+    const item = typeof chip === 'object' && chip ? {...chip} : {text: step.text || chip, who: step.who || 'them'};
+    if (step.sponsored) item.sponsored = true;
+    if (step.author) item.author = step.author;
+    deliver(item);
+    await new Promise(r => setTimeout(r, 1600));
+  }
+  playing = false;
+}
+
+function toast(msg) {
+  $('toast').textContent = msg;
+  $('toast').classList.add('show');
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => $('toast').classList.remove('show'), 2200);
+}
+
+document.querySelector('.tabs').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b || playing) return;
+  app = b.dataset.app; mails.length = 0; history.replaceState(null, '', '#' + app); render();
+});
+document.querySelector('.who').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  who = b.dataset.who;
+  for (const x of document.querySelectorAll('.who button')) x.setAttribute('aria-pressed', x === b);
+});
+$('chips').addEventListener('click', e => { const b = e.target.closest('button'); if (b) fillChip(Number(b.dataset.chip)); });
+$('form').addEventListener('submit', e => { e.preventDefault(); deliver(fromForm()); $('text').value = ''; });
+$('text').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) $('form').requestSubmit(); });
+$('sender').addEventListener('input', () => { for (const id of ['headName', 'contactName']) if ($(id)) $(id).textContent = $('sender').value; });
+$('playScam').addEventListener('click', () => play(APPS[app].scam));
+$('playOk').addEventListener('click', () => play(APPS[app].ok));
+$('reset').addEventListener('click', () => { if (!playing) { mails.length = 0; render(); } });
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-nowhere]')) { e.preventDefault(); toast('V ukázce odkazy ani přílohy nikam nevedou.'); }
+});
+
+app = APPS[location.hash.slice(1)] ? location.hash.slice(1) : 'chat';
+render();
+</script>
+</body>
+</html>

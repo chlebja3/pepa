@@ -1,0 +1,70 @@
+{
+  "about": "Fast pattern signals passed to the verifier as hints. Patterns run on lowercased text without diacritics, so they are written in plain ASCII and must work the same in Python re and JavaScript RegExp. They describe tactics shared by many kinds of scams, never a particular scam story, sender or company.",
+  "signals": [
+    {
+      "id": "safe_account",
+      "label": "výzva převést peníze na jiný účet",
+      "pattern": "bezpecn\\w* (ucet|uctu|uct)|ochrann\\w* ucet|prevest .{0,40}(na|do) (novy|jiny|bezpecn)"
+    },
+    {
+      "id": "remote_access",
+      "label": "instalace aplikace pro vzdálený přístup",
+      "pattern": "anydesk|teamviewer|rustdesk|quicksupport|vzdalen\\w* (pristup|plochu|sprav)"
+    },
+    {
+      "id": "card_data",
+      "label": "žádost o údaje z platební karty",
+      "pattern": "\\bcvv\\b|\\bcvc\\b|cislo (vasi |sve |platebni )?karty|platnost karty|kod (ze|z) (zadni|karty)"
+    },
+    {
+      "id": "credentials",
+      "label": "žádost o heslo, PIN nebo kód",
+      "pattern": "(zadejte|zadat|vyplnte|vyplnit|potvrdte|sdelte|sdelit|poslete|prepiste|nadiktujte) .{0,50}(heslo|prihlasovaci|\\bpin\\b|kod z sms|overovaci kod|jednorazov)"
+    },
+    {
+      "id": "login_link",
+      "label": "odkaz s výzvou k přihlášení nebo ověření",
+      "pattern": "(prihlaste|prihlasit|overit|overte|aktualizujte|aktualizovat|potvrdte|potvrdit|obnovte|obnovit|odblokovat|odblokujte|opravu).{0,80}(https?://|www\\.|\\bzde\\b|\\bodkaz)"
+    },
+    {
+      "id": "pay_link",
+      "label": "platba nebo poplatek přes odkaz",
+      "pattern": "(zaplat|uhrad|doplat|poplatek|\\bclo\\b|celni).{0,80}(https?://|www\\.|\\bzde\\b|\\bodkaz)"
+    },
+    {
+      "id": "pressure",
+      "label": "nátlak nebo hrozba zablokování",
+      "pattern": "posledni vyzv|do 24 hodin|do 48 hodin|bude (vam )?(zablokovan|zrusen|ukoncen|odpojen|deaktivovan|smazan)|zablokovani|pozastaven"
+    },
+    {
+      "id": "secrecy",
+      "label": "žádost, aby o tom nikomu neříkal",
+      "pattern": "nikomu (o tom |to )?nerikejte|nerikejte (to |o tom )?(nikomu|bance|rodine|v bance)|nekontaktujte (banku|policii)|v (naprost[ea] )?tajnosti|nezavesujte"
+    },
+    {
+      "id": "easy_money",
+      "label": "slib vysokého nebo zaručeného výdělku",
+      "pattern": "garantovan\\w* (vynos|prijem|zisk)|zarucen\\w* (vynos|prijem|zisk)|bez rizika|(vydel|zisk|prijem)\\w* .{0,40}(denne|za den|tydne)|zhodnoceni .{0,20}\\d+ ?%"
+    },
+    {
+      "id": "prize",
+      "label": "údajná výhra nebo odměna",
+      "pattern": "vyhral\\w*|vyherc|vyhra .{0,30}ceka|odmena .{0,20}ceka|byl\\w* jste vybran"
+    },
+    {
+      "id": "prepay_private",
+      "label": "platba předem na soukromý účet",
+      "pattern": "(platb\\w*|zaplatit|uhradit) (predem|zalohou).{0,60}(soukrom|osobni|na ucet)|na (muj|soukromy|osobni) ucet"
+    },
+    {
+      "id": "unusual_payment",
+      "label": "platba hotovostí přes prostředníka, kryptoměnou nebo dárkovou kartou",
+      "pattern": "vyber\\w* (hotovost|vsechny penize|uspory)|predat .{0,30}(kuryr|kolegovi|prostrednik)|bitcoinomat|kryptomat|(v|ve) (bitcoin|kryptomen)|darkov\\w* (kart|poukaz)|(google play|paysafe|steam)\\w* (kart|kod)"
+    },
+    {
+      "id": "odd_link",
+      "label": "odkaz na neobvyklou internetovou adresu",
+      "pattern": "https?://[^\\s/]*\\.(site|top|xyz|icu|online|click|live|buzz|cfd|sbs|rest|vip|cyou|monster|lat|bond|quest|shop)\\b|https?://[^\\s/]*\\d+-\\d+[^\\s/]*"
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+[
+ {
+  "id": "bank-phishing",
+  "layout": "mail-iframe",
+  "expect": "warn"
+ },
+ {
+  "id": "energy-refund",
+  "layout": "mail-iframe",
+  "expect": "warn"
+ },
+ {
+  "id": "ceo-invoice",
+  "layout": "mail-plain",
+  "expect": "warn"
+ },
+ {
+  "id": "inheritance",
+  "layout": "mail-plain",
+  "expect": "warn"
+ },
+ {
+  "id": "parcel-email",
+  "layout": "mail-iframe",
+  "expect": "warn"
+ },
+ {
+  "id": "order-confirmation",
+  "layout": "mail-iframe",
+  "expect": "quiet"
+ },
+ {
+  "id": "newsletter",
+  "layout": "mail-iframe",
+  "expect": "quiet"
+ },
+ {
+  "id": "invoice-attachment",
+  "layout": "mail-plain",
+  "expect": "warn"
+ },
+ {
+  "id": "invoice-pdf",
+  "layout": "mail-plain",
+  "expect": "quiet"
+ },
+ {
+  "id": "bank-notice",
+  "layout": "mail-plain",
+  "expect": "quiet"
+ },
+ {
+  "id": "family-mail",
+  "layout": "mail-plain",
+  "expect": "quiet"
+ },
+ {
+  "id": "mami-whatsapp",
+  "layout": "chat",
+  "expect": "warn"
+ },
+ {
+  "id": "marketplace-buyer",
+  "layout": "chat",
+  "expect": "warn"
+ },
+ {
+  "id": "fake-police",
+  "layout": "chat",
+  "expect": "warn"
+ },
+ {
+  "id": "romance",
+  "layout": "chat",
+  "expect": "warn"
+ },
+ {
+  "id": "family-chat",
+  "layout": "chat",
+  "expect": "quiet"
+ },
+ {
+  "id": "marketplace-ok",
+  "layout": "chat",
+  "expect": "quiet"
+ },
+ {
+  "id": "mami-split",
+  "layout": "chat-deep",
+  "expect": "warn"
+ },
+ {
+  "id": "bazar-split",
+  "layout": "chat-deep",
+  "expect": "quiet"
+ },
+ {
+  "id": "family-split",
+  "layout": "chat-deep",
+  "expect": "quiet"
+ },
+ {
+  "id": "sms-customs",
+  "layout": "sms",
+  "expect": "warn"
+ },
+ {
+  "id": "sms-toll",
+  "layout": "sms",
+  "expect": "warn"
+ },
+ {
+  "id": "sms-housing-aid",
+  "layout": "sms",
+  "expect": "warn"
+ },
+ {
+  "id": "sms-doctor",
+  "layout": "sms",
+  "expect": "quiet"
+ },
+ {
+  "id": "sms-delivery-ok",
+  "layout": "sms",
+  "expect": "quiet"
+ },
+ {
+  "id": "investment-ad",
+  "layout": "web",
+  "expect": "warn"
+ },
+ {
+  "id": "tech-support",
+  "layout": "web",
+  "expect": "warn"
+ },
+ {
+  "id": "fake-eshop",
+  "layout": "web",
+  "expect": "warn"
+ },
+ {
+  "id": "news-about-scams",
+  "layout": "web",
+  "expect": "quiet"
+ },
+ {
+  "id": "municipal",
+  "layout": "web",
+  "expect": "quiet"
+ }
+]

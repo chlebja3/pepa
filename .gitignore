@@ -1,0 +1,19 @@
+# made by install/install.py inside helper/: Python, llama.cpp, models, launcher and manifest (Windows)
+helper/.venv/
+helper/runtime/
+helper/models/
+helper/native-host.cmd
+helper/cz.aihlidac.helper.json
+# test profiles and caches
+.local/
+__pycache__/
+*.pyc
+# downloads in progress
+*.part
+# test output
+tests/pages/shots/
+# editors and OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
